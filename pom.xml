@@ -97,9 +97,26 @@
         </dependency>
     </dependencies>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repository.spring.release</id>
+            <name>Spring GA Repository</name>
+            <url>https://repo.spring.io/plugins-release/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <url>http://repo.spring.io/snapshot</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <!-- required for lombok-maven-plugin plugin -->
-        <sourceDirectory>${project.build.directory}/generated-sources/delombok</sourceDirectory>
+        <sourceDirectory>${project.build.directory}/generated-sources/delombok
+        </sourceDirectory>
 
         <plugins>
             <plugin>

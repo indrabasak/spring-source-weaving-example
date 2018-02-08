@@ -13,7 +13,7 @@ including annotation class, aspect class, and target class.
 The AspectJ compiler (`ajc`) processes the source code and generates woven
 byte code. All the source code should be present together at the compile time.
 
-### Why source weaving?
+### Why do you need source weaving?
 1. Due to the proxy-based nature of Spring’s AOP framework, calls within the 
 target object are by definition not intercepted.
 
@@ -29,12 +29,18 @@ In other words,
 the second point mentioned above.
                 
 1. Any call to method **methodB** of class **ClassX*** from **methodA** of 
-class **ClassX** will not be intercepted since they belong to same target 
-object. Please refere to the first point above.
+class **ClassX** will not be intercepted since they belong to the same target 
+object. Please refer to the first point above.
+
+AspectJ source weaving will help you get past the above limitations posed by
+Spring AOP.
 
 ### Dependency Requirements
 
 #### AspectJ Runtime Library
+Annotation such as `@Aspect`, `@Pointcut`, and `@Before` are in `aspectjrt.jar`.
+The `aspectjrt.jar` and must be in the classpath regardless of whether 
+the aspects in the code are compiled with `ajc` or `javac`.
 
 ```xml
 <dependency>
@@ -45,6 +51,9 @@ object. Please refere to the first point above.
 ```
 
 #### AspectJ Weaving Library
+The `aspectjweaver.jar` contains the AspectJ wevaing classes. The weaver is 
+responsible for mapping crosscutting elements to Java constructs.
+
 ```xml
 <dependency>
     <groupId>org.aspectj</groupId>
@@ -54,6 +63,8 @@ object. Please refere to the first point above.
 ```
 
 #### AspectJ Maven Plugin
+The `aspectj-maven-plugin` plugin is used for weaving AspectJ aspects into 
+the classes using `ajc` (AspectJ compiler) during compile time.
 
 ```xml
 <plugin>
@@ -96,6 +107,9 @@ object. Please refere to the first point above.
 ```
 
 #### Lombok Maven Plugin (Optional)
+The `lombok-maven-plugin` is required only if any of the classes uses Lombok
+annotations. The Lombok annotated classes are delomboked before compiled with
+the `ajc`.
 
 ```xml
 <plugin>
