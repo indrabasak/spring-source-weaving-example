@@ -4,7 +4,7 @@
 
 Spring Boot Source Weaving (Compile time) Example with AspectJ
 ===============================================================
-This is an example of source weaving (compile time) with AspectJ.
+This is an example of Spring Boot source weaving (compile time) with AspectJ.
 
 ### Source Weaving
 AspectJ source weaving is compile-time weaving when all source code is available
@@ -12,6 +12,25 @@ including annotation class, aspect class, and target class.
 
 The AspectJ compiler (`ajc`) processes the source code and generates woven
 byte code. All the source code should be present together at the compile time.
+
+### Why source weaving?
+1. Due to the proxy-based nature of Spring’s AOP framework, calls within the 
+target object are by definition not intercepted.
+
+1. For JDK proxies, only public interface method calls on the proxy can be 
+intercepted. With CGLIB, public and protected method calls on the proxy will 
+be intercepted, and even package-visible methods if necessary.
+
+You can find more [here](https://docs.spring.io/spring/docs/4.3.x/spring-framework-reference/html/aop.html#Supported%20Pointcut%20Designators).
+
+In other words, 
+
+1. Any call to a **private method** will not be intercepted. Please refer to 
+the second point mentioned above.
+                
+1. Any call to method **methodB** of class **ClassX*** from **methodA** of 
+class **ClassX** will not be intercepted since they belong to same target 
+object. Please refere to the first point above.
 
 ### Dependency Requirements
 
