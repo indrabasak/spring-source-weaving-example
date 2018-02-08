@@ -1,6 +1,6 @@
 [![Build Status][travis-badge]][travis-badge-url]
 
-![](./img/aspectj-logo.jpg)
+![](./img/aspectj-src-weaving-logo.svg)
 
 Spring Boot Source Weaving (Compile time) Example with AspectJ
 ===============================================================
@@ -12,6 +12,8 @@ including annotation class, aspect class, and target class.
 
 The AspectJ compiler (`ajc`) processes the source code and generates woven
 byte code. All the source code should be present together at the compile time.
+
+![](./img/aspectj-source-weaving.svg)
 
 ### Why do you need source weaving?
 1. Due to the proxy-based nature of Spring’s AOP framework, calls within the 
@@ -34,6 +36,81 @@ object. Please refer to the first point above.
 
 AspectJ source weaving will help you get past the above limitations posed by
 Spring AOP.
+
+### Project Description
+1. A `CustomAnnotation` annotation to intercept any method.
+
+```java
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CustomAnnotation {
+
+    String description() default "";
+}
+```
+
+1. A `CustomAnnotationAspect` aspect to intercept any method marked with
+`@CustomAnnotation`. It prints out the name of the intercepted class and method.
+
+```java
+@Component
+@Aspect
+@Slf4j
+public class CustomAnnotationAspect {
+
+    @Before("@annotation(anno) && execution(* *(..))")
+    public void inspectMethod(JoinPoint jp, CustomAnnotation anno) {
+        log.info(
+                "Entering CustomAnnotationAspect.inspectMethod() in class "
+                        + jp.getSignature().getDeclaringTypeName()
+                        + " - method: " + jp.getSignature().getName()
+                        + " description: " + anno.description());
+    }
+}
+```
+
+1. The `BookService` class is the example where the `@CustomAnnotation` is used.
+The **privat**e method `validateRequest` is called from `create` method. The
+`create` method is annotated with Spring's `@Transactional` annotation.
+
+```java
+@Service
+@Slf4j
+public class BookService {
+
+    private BookRepository repository;
+
+    @Autowired
+    public BookService(BookRepository repository) {
+        this.repository = repository;
+    }
+
+    @Transactional
+    public Book create(BookRequest request) {
+        Book entity = validateRequest(request);
+        return repository.save(entity);
+    }
+
+    public Book read(UUID id) {
+        return repository.getOne(id);
+    }
+
+    @CustomAnnotation(description = "Validates book request.")
+    private Book validateRequest(BookRequest request) {
+        log.info("Validating book request!");
+
+        Assert.notNull(request, "Book request cannot be empty!");
+        Assert.notNull(request.getTitle(), "Book title cannot be missing!");
+        Assert.notNull(request.getAuthor(), "Book author cannot be missing!");
+
+        Book entity = new Book();
+        entity.setTitle(request.getTitle());
+        entity.setAuthor(request.getAuthor());
+
+        return entity;
+    }
+}
+```
 
 ### Dependency Requirements
 
@@ -147,9 +224,17 @@ java -jar spring-source-weaving-example-1.0.0.jar
 ```
 
 ### Usage
-The application starts up at port `8080`. You can access the swagger UI at 
+Once the application starts up at port `8080`, you can access the swagger UI at 
 `http://localhost:8080/swagger-ui.html`. From the UI, you can create and retrieve
 book entities.
+
+Once you create a book entity, you should notice the following message on the
+terminal:
+
+```
+2018-02-08 09:46:55.429  INFO 29924 --- [nio-8080-exec-1] c.basaki.aspect.CustomAnnotationAspect   : Entering CustomAnnotationAspect.inspectMethod() in class com.basaki.service.BookService - method: validateRequest description: Validates book request.
+2018-02-08 09:46:55.429  INFO 29924 --- [nio-8080-exec-1] com.basaki.service.BookService           : Validating book request!
+```
 
 
 [travis-badge]: https://travis-ci.org/indrabasak/spring-source-weaving-example.svg?branch=master

@@ -21,10 +21,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CustomAnnotationAspect {
 
-    @Before("@annotation(anno) && execution(private * *(..))")
-    public void inspectPrivateMethod(JoinPoint jp, CustomAnnotation anno) {
+    @Before("@annotation(anno) && execution(* *(..))")
+    public void inspectMethod(JoinPoint jp, CustomAnnotation anno) {
         log.info(
-                "Entering CustomAnnotationAspect.inspectPrivateMethod() in class "
+                "Entering CustomAnnotationAspect.inspectMethod() in class "
                         + jp.getSignature().getDeclaringTypeName()
                         + " - method: " + jp.getSignature().getName()
                         + " description: " + anno.description());
