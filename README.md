@@ -1,6 +1,6 @@
 [![Build Status][travis-badge]][travis-badge-url]
 
-![](./img/aspectj-src-weaving-logo.svg)
+![](./img/aspectj-source-weaving-logo.svg)
 
 Spring Boot Source Weaving (Compile time) Example with AspectJ
 ===============================================================
@@ -15,7 +15,7 @@ byte code. All the source code should be present together at the compile time.
 
 ![](./img/aspectj-source-weaving.svg)
 
-### Why do you need source weaving?
+### When do you need source weaving?
 1. Due to the proxy-based nature of Spring’s AOP framework, calls within the 
 target object are by definition not intercepted.
 
