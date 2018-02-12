@@ -2,7 +2,7 @@ package com.basaki.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * {@code BookRequest} represents a response during book creation.
@@ -11,7 +11,7 @@ import lombok.Data;
  * @author Indra Basak
  * @since 12/7/17
  */
-@Data
+@Getter
 public class BookRequest {
 
     private String title;
