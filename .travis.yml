@@ -2,9 +2,12 @@ language: java
 jdk:
 - oraclejdk8
 before_script:
+- mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+script:
 - mvn clean install sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=indrabasak-github
   -Dsonar.login=$SONAR_TOKEN
-script: mvn clean compile test
+cache:
+  directories: "– $HOME/.m2 – $HOME/.sonar/cache"
 notifications:
   email:
   - indra.basak1@gmail.com

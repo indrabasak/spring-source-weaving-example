@@ -4,9 +4,9 @@ server:
 
 # For Spring Actuator /info endpoint
 info:
-    artifact: spring-binary-weaving-example
-    name: spring-binary-weaving-example
-    description: Spring Binary Weaving Example
+    artifact: spring-source-weaving-example
+    name: spring-source-weaving-example
+    description: Spring Source Weaving Example
     version: 1.0.0
 
 #Exposes Spring actuator endpoints
